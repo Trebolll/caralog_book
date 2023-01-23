@@ -1,9 +1,12 @@
 module nsk.javafx.cataloguebook {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
-    requires org.controlsfx.controls;
+    opens nsk.javafx.cataloguebook.controller to javafx.fxml;
+    //opens nsk.javafx.cataloguebook.objects to javafx.base;
 
-    opens nsk.javafx.cataloguebook to javafx.fxml;
+
     exports nsk.javafx.cataloguebook;
+  //  exports nsk.javafx.cataloguebook.controller;
 }
