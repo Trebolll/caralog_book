@@ -21,9 +21,10 @@ public class SQLiteAddressBook implements AddressBook {
 
     @Override
     public boolean add(Person person) {
-        try (Connection con = SQLiteConnection.getConnection(); PreparedStatement statement = con.prepareStatement("insert into person(fio,phone)values (?,?)",Statement.RETURN_GENERATED_KEYS);) {
+        try (Connection con = SQLiteConnection.getConnection(); PreparedStatement statement = con.prepareStatement("insert into person(fio, phone) values (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, person.getFio());
             statement.setString(2, person.getPhone());
+
 
             int result = statement.executeUpdate();
             if (result > 0) {
@@ -32,9 +33,10 @@ public class SQLiteAddressBook implements AddressBook {
                 personList.add(person);
                 return true;
             }
-        } catch (SQLException exe) {
-            Logger.getLogger(SQLiteConnection.class.getName()).log(Level.SEVERE, null, exe);
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLiteAddressBook.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return false;
     }
 
@@ -43,7 +45,8 @@ public class SQLiteAddressBook implements AddressBook {
     public boolean update(Person person) {
 
         try (Connection con = SQLiteConnection.getConnection();
-             PreparedStatement statement = con.prepareStatement("update  person set fio=?, phone=? where id=?");) {
+             PreparedStatement statement = con.
+                     prepareStatement("update person set fio=?, phone=? where id=?");) {
             statement.setString(1, person.getFio());
             statement.setString(2, person.getPhone());
             statement.setInt(3, person.getId());
@@ -58,10 +61,6 @@ public class SQLiteAddressBook implements AddressBook {
         return false;
         }
 
-
-
-
-
     @Override
     public boolean delete(Person person) {
         try(Connection con = SQLiteConnection.getConnection(); Statement statement = con.createStatement();){
@@ -71,7 +70,6 @@ public class SQLiteAddressBook implements AddressBook {
                 personList.remove(person);
                 return true;
             }
-
         }catch (SQLException ex){
             Logger.getLogger(SQLiteConnection.class.getName()).log(Level.SEVERE,null,ex);
         }

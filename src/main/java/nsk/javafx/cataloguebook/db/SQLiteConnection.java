@@ -8,20 +8,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SQLiteConnection {
-
     private static Connection connection;
-
-
     public static Connection getConnection() {
 
-        if (connection == null) {
-            try {
-                String url = "jdbc:sqlite:db" + File.separator + "addressbook.db";
-               connection = DriverManager.getConnection(url);
-            } catch (SQLException ex) {
-                Logger.getLogger(SQLiteConnection.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            if (connection == null || connection.isClosed()) {
+                try {
+
+                    String url = "jdbc:sqlite:D:\\Backend\\catalogue-book\\db" + File.separator + "addressbook.db";
+                    connection = DriverManager.getConnection(url);
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(SQLiteConnection.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
         return connection;
     }
 }

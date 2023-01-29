@@ -11,7 +11,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nsk.javafx.cataloguebook.controller.Controller">
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nsk.javafx.cataloguebook.controller.MainController">
   <children>
     <HBox maxHeight="50.0" prefHeight="100.0">
       <children>
@@ -43,7 +44,7 @@
     </AnchorPane>
     <AnchorPane prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
       <children>
-        <TableView fx:id="tableAddressBook" prefHeight="400.0" prefWidth="357.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <TableView fx:id="tableCatalogueBook" prefHeight="400.0" prefWidth="357.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <columns>
             <TableColumn fx:id="columnFIO" minWidth="100.0" text="ФИО" />
             <TableColumn fx:id="columnPhone" minWidth="100.0" prefWidth="-1.0" text="Тел." />
@@ -67,6 +68,6 @@
 
   </children>
   <stylesheets>
-    <URL value="@addressbook.css" />
+    <URL value="@cataloguebook.css" />
   </stylesheets>
 </VBox>
