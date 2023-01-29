@@ -4,24 +4,29 @@ package nsk.javafx.cataloguebook.interfaces.impls;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import nsk.javafx.cataloguebook.db.SQLiteConnection;
-import nsk.javafx.cataloguebook.interfaces.AddressBook;
+import nsk.javafx.cataloguebook.interfaces.СatalogueBook;
 import nsk.javafx.cataloguebook.objects.Person;
 
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SQLiteAddressBook implements AddressBook {
+public class SQLiteСatalogueBook implements СatalogueBook {
 
     private ObservableList<Person> personList = FXCollections.observableArrayList();
 
-    public SQLiteAddressBook() {
+    public SQLiteСatalogueBook() {
         personList = findAll();
     }
 
     @Override
     public boolean add(Person person) {
-        try (Connection con = SQLiteConnection.getConnection(); PreparedStatement statement = con.prepareStatement("insert into person(fio, phone) values (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+
+        String query = String.format("insert into person(fio, phone) values (?, ?)");
+
+        try (Connection con = SQLiteConnection.getConnection();
+             PreparedStatement statement = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)) {
+
             statement.setString(1, person.getFio());
             statement.setString(2, person.getPhone());
 
@@ -34,7 +39,7 @@ public class SQLiteAddressBook implements AddressBook {
                 return true;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SQLiteAddressBook.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SQLiteСatalogueBook.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return false;
@@ -43,10 +48,11 @@ public class SQLiteAddressBook implements AddressBook {
 
     @Override
     public boolean update(Person person) {
+        String query = String.format("update person set fio=?, phone=? where id=?");
 
         try (Connection con = SQLiteConnection.getConnection();
              PreparedStatement statement = con.
-                     prepareStatement("update person set fio=?, phone=? where id=?");) {
+                     prepareStatement(query);) {
             statement.setString(1, person.getFio());
             statement.setString(2, person.getPhone());
             statement.setInt(3, person.getId());
@@ -63,8 +69,13 @@ public class SQLiteAddressBook implements AddressBook {
 
     @Override
     public boolean delete(Person person) {
-        try(Connection con = SQLiteConnection.getConnection(); Statement statement = con.createStatement();){
-            int result = statement.executeUpdate("delete from person where id=" + person.getId());
+
+        String query = String.format("delete from person where id=");
+
+
+        try(Connection con = SQLiteConnection.getConnection();
+            Statement statement = con.createStatement();){
+            int result = statement.executeUpdate(query + person.getId());
 
             if(result>0){
                 personList.remove(person);
@@ -78,11 +89,14 @@ public class SQLiteAddressBook implements AddressBook {
 
     @Override
     public ObservableList<Person> findAll() {
-       personList.clear();
+
+        String query = String.format("select * from person");
+
+        personList.clear();
 
        try(Connection connection = SQLiteConnection.getConnection();
            Statement statement = connection.createStatement();
-           ResultSet rs = statement.executeQuery("select * from person");){
+           ResultSet rs = statement.executeQuery(query);){
 
            while (rs.next()){
                Person person = new Person();
@@ -101,10 +115,14 @@ public class SQLiteAddressBook implements AddressBook {
 
     @Override
     public ObservableList<Person> find(String text) {
+
+        String query = String.format("select * from person where fio like? or phone like?");
+
+
         personList.clear();
 
         try(Connection connection = SQLiteConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from person where fio like? or phone like?")
+            PreparedStatement statement = connection.prepareStatement(query)
             ;){
 
             String searchStr = "%" + text + "%";

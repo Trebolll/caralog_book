@@ -14,9 +14,10 @@ public class SQLiteConnection {
         try {
             if (connection == null || connection.isClosed()) {
                 try {
-
+                    String username = "postgres";
+                    String password = "rootroot";
                     String url = "jdbc:sqlite:D:\\Backend\\catalogue-book\\db" + File.separator + "addressbook.db";
-                    connection = DriverManager.getConnection(url);
+                    connection = DriverManager.getConnection(url,username,password);
 
                 } catch (SQLException ex) {
                     Logger.getLogger(SQLiteConnection.class.getName()).log(Level.SEVERE, null, ex);

@@ -14,8 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import nsk.javafx.cataloguebook.Main;
-import nsk.javafx.cataloguebook.db.SQLiteConnection;
-import nsk.javafx.cataloguebook.interfaces.impls.SQLiteAddressBook;
+import nsk.javafx.cataloguebook.interfaces.impls.SQLiteСatalogueBook;
 import nsk.javafx.cataloguebook.objects.Person;
 import nsk.javafx.cataloguebook.utils.DialogManager;
 
@@ -25,23 +24,31 @@ import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
 
-    private final SQLiteAddressBook catalogueBookImpl = new SQLiteAddressBook();
+    private final SQLiteСatalogueBook catalogueBookImpl = new SQLiteСatalogueBook();
     @FXML
     private Button btnAdd;
+
     @FXML
     private Button btnEdit;
+
     @FXML
     private Button btnDelete;
+
     @FXML
     private TextField txtSearch;
+
     @FXML
     private Button btnSearch;
+
     @FXML
     private TableView tableCatalogueBook;
+
     @FXML
     private TableColumn<Person, String> columnFIO;
+
     @FXML
     private TableColumn<Person, String> columnPhone;
+
     @FXML
     private Label labelCount;
 
@@ -72,14 +79,20 @@ public class MainController implements Initializable {
     }
 
     private void initListeners() {
-        catalogueBookImpl.getPersonList().addListener((ListChangeListener<Person>) c -> updateCountLabel());
-
-        tableCatalogueBook.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                btnEdit.fire();
+        catalogueBookImpl.getPersonList().addListener(new ListChangeListener<Person>() {
+            @Override
+            public void onChanged(Change<? extends Person> c) {
+                updateCountLabel();
             }
         });
-
+        tableCatalogueBook.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() == 2) {
+                    btnEdit.fire();
+                }
+            }
+        });
     }
 
     private void updateCountLabel() {
@@ -97,13 +110,16 @@ public class MainController implements Initializable {
     }
 
     public void buttonActionPressed(ActionEvent actionEvent) {
+
         Object source = actionEvent.getSource();
 
-        if (!(source instanceof Button clickedButton)) {
+        if (!(source instanceof Button)) {
             return;
         }
 
-        Person selectedPerson = (Person) tableCatalogueBook.getSelectionModel().getSelectedCells();
+        Person selectedPerson = (Person) tableCatalogueBook.getSelectionModel().getSelectedItem();
+
+        Button clickedButton = (Button) source;
 
         boolean research = false;
 
@@ -117,6 +133,7 @@ public class MainController implements Initializable {
                     research = true;
                 }
                 break;
+
             case "btnEdit":
 
                 if (!personIsSelected(selectedPerson)) {
@@ -124,6 +141,8 @@ public class MainController implements Initializable {
                 }
                 editDialogController.setPerson(selectedPerson);
                 showDialog();
+
+
                 if (editDialogController.isSaveClicked()) {
                     catalogueBookImpl.update(selectedPerson);
                     research = true;
@@ -139,22 +158,22 @@ public class MainController implements Initializable {
                 catalogueBookImpl.delete(selectedPerson);
                 break;
         }
-        if(research){
+        if (research) {
             actionSearch(actionEvent);
         }
     }
 
 
-    private boolean personIsSelected(Person selectedPerson){
-        if(selectedPerson == null){
+    private boolean personIsSelected(Person selectedPerson) {
+        if (selectedPerson == null) {
             DialogManager.showInfoDialog("Ошибка ", "Выберите значение");
             return false;
         }
         return true;
     }
 
-    private void showDialog(){
-        if(editDialogStage == null){
+    private void showDialog() {
+        if (editDialogStage == null) {
             editDialogStage = new Stage();
             editDialogStage.setTitle("Редактировать");
             editDialogStage.setMinHeight(150);
@@ -163,23 +182,22 @@ public class MainController implements Initializable {
             editDialogStage.setScene(new Scene(fxmlEdit));
             editDialogStage.initModality(Modality.WINDOW_MODAL);
         }
-
         editDialogStage.showAndWait();
     }
 
-    public void actionSearch(ActionEvent actionEvent){
-        if(txtSearch.getText().trim().length()==0){
+    public void actionSearch(ActionEvent actionEvent) {
+        if (txtSearch.getText().trim().length() == 0) {
             catalogueBookImpl.findAll();
-        }else {
+        } else {
             catalogueBookImpl.find(txtSearch.getText());
         }
     }
 
 
-    private boolean confirmDelete(){
-        if( DialogManager.showConfirmInfoDialog("Потдверждение", "Удалить").get() == ButtonType.OK){
+    private boolean confirmDelete() {
+        if (DialogManager.showConfirmInfoDialog("Подтверждение", "Удалить").get() == ButtonType.OK) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

@@ -3,7 +3,7 @@ package nsk.javafx.cataloguebook.interfaces;
 import javafx.collections.ObservableList;
 import nsk.javafx.cataloguebook.objects.Person;
 
-public interface AddressBook {
+public interface СatalogueBook {
 
     boolean add(Person person);
 
